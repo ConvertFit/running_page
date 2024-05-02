@@ -101,7 +101,7 @@ def device_info_headers():
 def download_codoon_gpx(gpx_data, log_id):
     try:
         print(f"downloading codoon {str(log_id)} gpx")
-        file_path = os.path.join(GPX_FOLDER, str(log_id) + ".gpx")
+        file_path = os.path.join(GPX_FOLDER, 'codoon_' + str(log_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
     except:
@@ -238,7 +238,7 @@ def tcx_output(fit_array, run_data):
     author.append(author_part)
     # write to TCX file
     xml_str = minidom.parseString(ET.tostring(training_center_database)).toprettyxml()
-    with open(TCX_FOLDER + "/" + fit_id + ".tcx", "w") as f:
+    with open(TCX_FOLDER + "/codoon_" + fit_id + ".tcx", "w") as f:
         f.write(str(xml_str))
 
 

@@ -22,7 +22,7 @@ get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
 def download_joyrun_gpx(gpx_data, joyrun_id):
     try:
         print(f"downloading joyrun_id {str(joyrun_id)} gpx")
-        file_path = os.path.join(GPX_FOLDER, str(joyrun_id) + ".gpx")
+        file_path = os.path.join(GPX_FOLDER, 'joyrun_'+ str(joyrun_id) + ".gpx")
         with open(file_path, "w") as fb:
             fb.write(gpx_data)
     except:
