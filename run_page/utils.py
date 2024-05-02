@@ -1,6 +1,8 @@
 import json
 import time
+import os
 from datetime import datetime
+from config import RESPONSE_OUT
 
 import pytz
 
@@ -117,3 +119,52 @@ def upload_file_to_strava(client, file_name, data_type, force_to_run=True):
         print(
             f"Uploading {data_type} file: {file_name} to strava, upload_id: {r.upload_id}."
         )
+
+# 根据单条纪录的响应寄过生成对应的文件名
+def keep_handler(response):
+    s_type = response['data']['type']
+    s_subtype = response['data']['subtype']
+    s_time = response['data']['startTime']
+    return f'{s_type}_{s_subtype}_{s_time}.json'
+
+def codoon_handler(response):
+    s_type = response['data']['activity_type']
+    s_subtype = response['data']['sports_type']
+    s_time = response['data']['StartDateTime']
+    return f'{s_type}_{s_subtype}_{s_time}.json'
+
+def joyrun_handler(response):
+    s_type = response['runrecord']['type']
+    s_time = response['runrecord']['starttime']
+    return f'{s_type}_{s_time}.json'
+
+def write_response(file_type):
+    file_name_handler = None
+    if file_type == "keep":
+        file_name_handler = keep_handler
+    elif file_type == "codoon":
+        file_name_handler = codoon_handler
+    elif file_type == "joyrun":
+        file_name_handler = joyrun_handler
+        
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                response = func(*args, **kwargs)
+                if file_name_handler is None:
+                    return response
+                
+                file_path = os.path.join(RESPONSE_OUT, file_type)
+                file_name = file_name_handler(response)
+                full_file_path = os.path.join(file_path, file_name)
+                if not os.path.exists(file_path):
+                    os.makedirs(file_path)
+                response_json = json.dumps(response, indent=4)
+                with open(full_file_path, "w") as fb:
+                    fb.write(response_json)
+                return response
+            except Exception as e:
+                print(f"Error: {str(e)}")
+                return None
+        return wrapper
+    return decorator

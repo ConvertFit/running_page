@@ -14,7 +14,7 @@ import requests
 from config import GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from Crypto.Cipher import AES
 from generator import Generator
-from utils import adjust_time
+from utils import adjust_time,write_response
 import xml.etree.ElementTree as ET
 
 KEEP_SPORT_TYPES = ["running", "hiking", "cycling"]
@@ -73,7 +73,7 @@ def get_to_download_runs_ids(session, headers, sport_type):
                 break
     return result
 
-
+@write_response('keep')
 def get_single_run_data(session, headers, run_id, sport_type):
     r = session.get(
         RUN_LOG_API.format(sport_type=sport_type, run_id=run_id), headers=headers

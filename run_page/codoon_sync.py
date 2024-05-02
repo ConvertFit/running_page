@@ -27,7 +27,7 @@ from config import (
 )
 from generator import Generator
 from tzlocal import get_localzone
-from utils import adjust_time_to_utc, adjust_timestamp_to_utc, to_date
+from utils import adjust_time_to_utc, adjust_timestamp_to_utc, to_date, write_response
 
 # struct body
 FitType = np.dtype(
@@ -478,7 +478,8 @@ class Codoon:
             point = gpxpy.gpx.GPXTrackPoint(**p)
             gpx_segment.points.append(point)
         return gpx.to_xml()
-
+    
+    @write_response("codoon")
     def get_single_run_record(self, route_id):
         print(f"Get single run for codoon id {route_id}")
         payload = {

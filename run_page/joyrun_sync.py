@@ -14,7 +14,7 @@ import requests
 from config import BASE_TIMEZONE, GPX_FOLDER, JSON_FILE, SQL_FILE, run_map, start_point
 from generator import Generator
 
-from utils import adjust_time
+from utils import adjust_time, write_response
 
 get_md5_data = lambda data: md5(str(data).encode("utf-8")).hexdigest().upper()
 
@@ -243,7 +243,8 @@ class Joyrun:
                 gpx_segment.points.append(point)
 
         return gpx.to_xml()
-
+    
+    @write_response("joyrun")
     def get_single_run_record(self, fid):
         payload = {
             "fid": fid,
